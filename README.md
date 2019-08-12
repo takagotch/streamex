@@ -48,11 +48,25 @@ public Map<String, List<User>> getGroupMembers(Colletion<String> groupNames) {
     .nonNullValues().mapValues(Group::getMembers).toMap();
 }
 
-DoubleStreamEx.of(input).pairMap(())
+DoubleStreamEx.of(input).pairMap((a, b) -> b-a).toArray();
+
+short[] multiply(short[] src, short multiplier) {
+  return IntStreamEx.of(src).map(x -> x*multiplier).toShortArray();
+}
+
+static <T> StreamEx<T> scanLeft(StreamEx<T> input, BinaryOperator<T> operator) {
+  return input.headTail((head, tail) -> scanLeft(tail.mapFirst(cur -> operator.apply(head, cur)), operator)
+    .prepend(head));
+}
 
 ```
 
 ```
+<dependency>
+  <groupId>one.util</groupId>
+  <artifactId>streamx</artifactId>
+  <version>0.6.8</version>
+</dependency>
 ```
 
 ```
